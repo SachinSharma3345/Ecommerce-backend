@@ -1,0 +1,235 @@
+{
+	"info": {
+		"name": "E-Commerce Spring Boot API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"johndoe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"role\": [\"admin\"]\n}"
+						},
+						"url": "http://localhost:8080/api/auth/register"
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code === 200) {",
+                                    "    pm.collectionVariables.set(\"jwt_token\", pm.response.json().token);",
+                                    "}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"johndoe\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": "http://localhost:8080/api/auth/login"
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Catalog",
+			"item": [
+				{
+					"name": "Create Category (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Electronics\",\n  \"description\": \"Gadgets and devices\"\n}"
+						},
+						"url": "http://localhost:8080/api/categories"
+					}
+				},
+				{
+					"name": "Create Product (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Smartphone\",\n  \"description\": \"Latest model 256GB\",\n  \"price\": 699.99,\n  \"stock\": 50,\n  \"category\": {\n    \"id\": 1\n  }\n}"
+						},
+						"url": "http://localhost:8080/api/products"
+					}
+				},
+				{
+					"name": "Get All Products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"url": "http://localhost:8080/api/products"
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Cart & Orders",
+			"item": [
+				{
+					"name": "Add Product to Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"url": {
+							"raw": "http://localhost:8080/api/cart/add/1?quantity=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"cart",
+								"add",
+								"1"
+							],
+							"query": [
+								{
+									"key": "quantity",
+									"value": "2"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "View Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"url": "http://localhost:8080/api/cart"
+					}
+				},
+				{
+					"name": "Checkout Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"url": "http://localhost:8080/api/orders/checkout"
+					}
+				},
+				{
+					"name": "Order History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"url": "http://localhost:8080/api/orders"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
